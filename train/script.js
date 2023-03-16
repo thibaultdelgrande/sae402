@@ -27,9 +27,15 @@ let interactionStatus = {
         type : 'none',
         id : 0,
         hauteur : 0
+    },
+    elementActuel : {
+        type : 'none',
+        id : 0,
+        hauteur : 0
     }
 }
 
+let railsTraces = [{depart : {x : 0, y : 0}, arrivee : {x : 0, y : 0}}];
 
 // Redimensionner le canvas en fonction de la taille de l'écran
 function resizeCanvas() {
@@ -45,30 +51,10 @@ function interaction(event) {
     // Définir l'interaction
 
     // Si la souris est enfoncée
-    if (event.type == 'mousedown') {
+    if (event.type == 'mousedown' && !interactionStatus.mouseDown) {
         interactionStatus.mouseDown = true;
         interactionStatus.mousePosition.x = x;
         interactionStatus.mousePosition.y = y;
-    }
-
-    // Si la souris est relachée
-    else if (event.type == 'mouseup') {
-        interactionStatus.mouseDown = false;
-        interactionStatus.mousePosition.x = x;
-        interactionStatus.mousePosition.y = y;
-    }
-
-    // Si la souris est déplacée alors qu'elle est enfoncée
-    else if (interactionStatus.mouseDown && event.type == 'mousemove') {
-        interactionStatus.mousePosition.x = x;
-        interactionStatus.mousePosition.y = y;
-    }
-
-    // Définir si la souris est sur un élément
-    if (interactionStatus.mouseDown) {
-
-        // Valeur par défaut
-        interactionStatus.dernierElement.type = 'none';
 
         // Si la souris est sur un rail à gauche
         for (let i = 0; i < railsGauche.nombre; i++) {
@@ -95,6 +81,52 @@ function interaction(event) {
             }
         }
     }
+
+    // Si la souris est relachée
+    else if (event.type == 'mouseup') {
+        interactionStatus.mouseDown = false;
+        interactionStatus.mousePosition.x = x;
+        interactionStatus.mousePosition.y = y;
+    }
+
+    // Si la souris est déplacée alors qu'elle est enfoncée
+    else if (interactionStatus.mouseDown && event.type == 'mousemove') {
+        interactionStatus.mousePosition.x = x;
+        interactionStatus.mousePosition.y = y;
+    }
+
+    // Définir si la souris est sur un élément
+    if (interactionStatus.mouseDown) {
+
+        // Valeur par défaut
+        interactionStatus.elementActuel.type = 'none';
+
+        // Si la souris est sur un rail à gauche
+        for (let i = 0; i < railsGauche.nombre; i++) {
+            if (x > railsGauche.rails[i].position.x && x < railsGauche.rails[i].position.x + railsGauche.rails[i].taille.x && y > railsGauche.rails[i].position.y && y < railsGauche.rails[i].position.y + railsGauche.rails[i].taille.y) {
+                interactionStatus.elementActuel.type = 'railsGauche';
+                interactionStatus.elementActuel.id = i;
+                interactionStatus.elementActuel.hauteur = railsGauche.rails[i].taille.y;
+            }
+        }
+
+        // Si la souris est sur un rail à droite
+        for (let i = 0; i < railsDroite.nombre; i++) {
+            if (x > railsDroite.rails[i].position.x && x < railsDroite.rails[i].position.x + railsDroite.rails[i].taille.x && y > railsDroite.rails[i].position.y && y < railsDroite.rails[i].position.y + railsDroite.rails[i].taille.y) {
+                interactionStatus.elementActuel.type = 'railsDroite';
+                interactionStatus.elementActuel.id = i;
+            }
+        }
+
+        // Si la souris est sur une station
+        for (let i = 0; i < stations.nombre; i++) {
+            if (x > stations.stations[i].position.x && x < stations.stations[i].position.x + stations.stations[i].taille.x && y > stations.stations[i].position.y && y < stations.stations[i].position.y + stations.stations[i].taille.y) {
+                interactionStatus.elementActuel.type = 'stations';
+                interactionStatus.elementActuel.id = i;
+            }
+        }
+    }
+    
 }
 
 function genererRailsEtStations() {
@@ -208,24 +240,55 @@ function draw() {
         ctx.fillRect(element.position.x, element.position.y, element.taille.x, element.taille.y);
     });
 
-    // Dessiner la ligne qui est en train d'être tracée
-    if (interactionStatus.mouseDown && interactionStatus.dernierElement.type == 'railsGauche') {
-        // Position du début du rectangle
-        let x = railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x;
-        let y = railsGauche.rails[interactionStatus.dernierElement.id].position.y + railsGauche.rails[interactionStatus.dernierElement.id].taille.y/2;
+    // Dessiner un rectangle qui relie la position du curseur à la position de l'élement sélectionné
+    if (interactionStatus.dernierElement.type != 'none') {
+        ctx.strokeStyle = '#000000';
+        ctx.beginPath();
+        if (interactionStatus.dernierElement.type == 'railsGauche') {
+            height = railsGauche.rails[interactionStatus.dernierElement.id].taille.y;
 
-        // Position de la fin du rectangle
-        let x2 = interactionStatus.mousePosition.x;
-        let y2 = interactionStatus.mousePosition.y;
+            // Se déplacer au point de départ
+            ctx.moveTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y);
+            
+            //Dessiner le rectangle
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y-height/2);
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y+height/2);
+            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + height);
+            // Remplir le rectangle
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+        }
+        if (interactionStatus.dernierElement.type == 'railsDroite') {
+            height = railsDroite.rails[interactionStatus.dernierElement.id].taille.y;
 
-        console.log(x, y, x2, y2)
+            // Se déplacer au point de départ
+            ctx.moveTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y);
+            
+            //Dessiner le rectangle
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y-height/2);
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y+height/2);
+            ctx.lineTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y + height);
+            // Remplir le rectangle
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+        }
 
-        // Dessiner le rectangle
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(x, y, x2-x, y2-y);
-        
+        // Si le rail tracé est sur une station
+        if (interactionStatus.dernierElement.type == 'railsGauche' && interactionStatus.elementActuel.type == 'stations') {
+            // Attache à le rails à la station
+            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + height);
+            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y);
+            // Remplir le rectangle
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+        }
 
+
+
+        ctx.stroke();
     }
+    console.log(interactionStatus.dernierElement.type)
+
 
 
 
