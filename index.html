@@ -1,12 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAÉ402</title>
+    <title>Ma carte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script>
+
+        if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
+        {
+            alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
+        }
+
+        function initMap() {
+            // Créer une carte centrée sur l'utilisateur
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var latLng = L.latLng(position.coords.latitude, position.coords.longitude);
+                var map = L.map('map').setView(latLng, 16);
+
+                // Ajouter un marqueur à l'emplacement de l'utilisateur
+                var marker = L.marker(latLng).addTo(map)
+                    .bindPopup("Vous êtes ici").openPopup();
+
+                // Ajouter une couche de tuiles OpenStreetMap
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }).addTo(map);
+            }, function (error) {
+                alert("Impossible de récupérer votre position : " + error.message);
+            }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
+        }
+    </script>
 </head>
-<body>
-    <a href="train">Train</a>
+
+<body onload="initMap()">
+    <div id="map" style="height: 500px"></div>
 </body>
+
 </html>
