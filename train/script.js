@@ -3,44 +3,44 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let interface = {
-    x : 0,
-    y : 0,
-    width : 0,
-    height : 0,
-    color : '#FFF',
-    texte : ['Placeholder','Place','Texte 3'],
-    texteColor : '#000000'
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    color: '#FFF',
+    texte: ['Placeholder', 'Place', 'Texte 3'],
+    texteColor: '#000000'
 }
 
-let railsGauche = {nombre : 4};
-let railsDroite = {nombre : 4};
-let stations = {nombre : 3};
-let zoneDeJeu = {position : {x : 0, y : 0}, taille : {x : 0, y : 0}};
+let railsGauche = { nombre: 4 };
+let railsDroite = { nombre: 4 };
+let stations = { nombre: 3 };
+let zoneDeJeu = { position: { x: 0, y: 0 }, taille: { x: 0, y: 0 } };
 
 let interactionStatus = {
-    mouseDown : false,
-    mousePosition : {
-        x : 0,
-        y : 0
+    mouseDown: false,
+    mousePosition: {
+        x: 0,
+        y: 0
     },
-    dernierElement : {
-        type : 'none',
-        id : 0,
-        hauteur : 0
+    dernierElement: {
+        type: 'none',
+        id: 0,
+        hauteur: 0
     },
-    elementActuel : {
-        type : 'none',
-        id : 0,
-        hauteur : 0
+    elementActuel: {
+        type: 'none',
+        id: 0,
+        hauteur: 0
     }
 }
 
-let railsTraces = [{depart : {x : 0, y : 0}, arrivee : {x : 0, y : 0}}];
+let railsTraces = [];
 
 // Redimensionner le canvas en fonction de la taille de l'écran
 function resizeCanvas() {
-    canvas.width = window.innerWidth-2;
-    canvas.height = window.innerHeight-5;
+    canvas.width = window.innerWidth - 2;
+    canvas.height = window.innerHeight - 5;
 }
 
 function interaction(event) {
@@ -126,27 +126,27 @@ function interaction(event) {
             }
         }
     }
-    
+
 }
 
 function genererRailsEtStations() {
     // Définir la taille et la position de la zone de jeu
-    zoneDeJeu.position.x = canvas.width/6;
-    zoneDeJeu.position.y = canvas.height/3;
-    zoneDeJeu.taille.x = canvas.width/6*4;
-    zoneDeJeu.taille.y = canvas.height*2/3;
+    zoneDeJeu.position.x = canvas.width / 6;
+    zoneDeJeu.position.y = canvas.height / 3;
+    zoneDeJeu.taille.x = canvas.width / 6 * 4;
+    zoneDeJeu.taille.y = canvas.height * 2 / 3;
 
     // Définir les taille et position des rails à gauche
     railsGauche.rails = [];
     for (let i = 0; i < railsGauche.nombre; i++) {
         railsGauche.rails.push({
-            position : {
-                x : 0,
-                y : canvas.height/3 + i*canvas.height*2/3/railsGauche.nombre + canvas.height*2/3/railsGauche.nombre/4
+            position: {
+                x: 0,
+                y: canvas.height / 3 + i * canvas.height * 2 / 3 / railsGauche.nombre + canvas.height * 2 / 3 / railsGauche.nombre / 4
             },
-            taille : {
-                x : canvas.width/6,
-                y : canvas.height/3/railsGauche.nombre
+            taille: {
+                x: canvas.width / 6,
+                y: canvas.height / 3 / railsGauche.nombre
             }
         });
     }
@@ -156,13 +156,13 @@ function genererRailsEtStations() {
     railsDroite.rails = [];
     for (let i = 0; i < railsDroite.nombre; i++) {
         railsDroite.rails.push({
-            position : {
-                x : canvas.width/6*5,
-                y : canvas.height/3 + i*canvas.height*2/3/railsDroite.nombre + canvas.height*2/3/railsDroite.nombre/4
+            position: {
+                x: canvas.width / 6 * 5,
+                y: canvas.height / 3 + i * canvas.height * 2 / 3 / railsDroite.nombre + canvas.height * 2 / 3 / railsDroite.nombre / 4
             },
-            taille : {
-                x : canvas.width/6,
-                y : canvas.height/3/railsDroite.nombre
+            taille: {
+                x: canvas.width / 6,
+                y: canvas.height / 3 / railsDroite.nombre
             }
         });
     }
@@ -172,16 +172,62 @@ function genererRailsEtStations() {
     stations.stations = [];
     for (let i = 0; i < stations.nombre; i++) {
         stations.stations.push({
-            position : {
-                x : canvas.width/6*2.5,
-                y : canvas.height/3 + i*canvas.height*2/3/stations.nombre + canvas.height*2/3/stations.nombre/4
+            position: {
+                x: canvas.width / 6 * 2.5,
+                y: canvas.height / 3 + i * canvas.height * 2 / 3 / stations.nombre + canvas.height * 2 / 3 / stations.nombre / 4
             },
-            taille : {
-                x : canvas.width/6,
-                y : canvas.height/3/stations.nombre
+            taille: {
+                x: canvas.width / 6,
+                y: canvas.height / 3 / stations.nombre
             }
         });
     }
+}
+
+// Fonction pour ajouter un rail
+function ajouterRails(objet) {
+    console.log(railsTraces,objet)
+    //Supprime les rails qui rentrent en conflit
+    //Créer un une liste des rails temporaire
+    let railsTracesTemp = [];
+    railsTraces.forEach( rail =>{
+        if (
+            //Si le type de départ et d'arrivée sont les mêmes
+            (objet.depart.type == rail.depart.type) && (objet.arrivee.type == rail.arrivee.type) && (
+                //Si l'id de départ est le même
+                (objet.depart.id == rail.depart.id) ||
+                //Si l'id d'arrivée est le même
+                (objet.arrivee.id == rail.arrivee.id) ||
+                //Si l'id de objet de départ est supérieur à l'id de rail de départ et que l'id de objet d'arrivée est inférieur à l'id de rail d'arrivée
+                (objet.depart.id > rail.depart.id) && (objet.arrivee.id < rail.arrivee.id) ||
+                //Si l'id de objet de départ est inférieur à l'id de rail de départ et que l'id de objet d'arrivée est supérieur à l'id de rail d'arrivée
+                (objet.depart.id < rail.depart.id) && (objet.arrivee.id > rail.arrivee.id)
+            ) ||
+            //Si le type de départ et d'arrivée sont inversés
+            (objet.depart.type == rail.arrivee.type) && (objet.arrivee.type == rail.depart.type) && (
+                //Si l'id de départ de objet est le même que l'id d'arrivée de rail
+                (objet.depart.id == rail.arrivee.id) ||
+                //Si l'id d'arrivée de objet est le même que l'id de départ de rail
+                (objet.arrivee.id == rail.depart.id) ||
+                //Si l'id de objet de départ est supérieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est inférieur à l'id de rail de départ
+                (objet.depart.id > rail.arrivee.id) && (objet.arrivee.id < rail.depart.id) ||
+                //Si l'id de objet de départ est inférieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est supérieur à l'id de rail de départ
+                (objet.depart.id < rail.arrivee.id) && (objet.arrivee.id > rail.depart.id)
+            )
+
+            )
+            {
+
+            }
+            else
+            {
+                railsTracesTemp.push(rail);
+            }
+    });
+    railsTraces = railsTracesTemp;
+    
+    //Ajoute le rail
+    railsTraces.push(objet);
 }
 
 
@@ -197,7 +243,7 @@ function draw() {
 
     // Définir la taille de l'interface
     interface.width = canvas.width;
-    interface.height = canvas.height/3;
+    interface.height = canvas.height / 3;
 
     // Dessiner l'interface
     ctx.fillStyle = interface.color;
@@ -205,7 +251,7 @@ function draw() {
 
     // Définir la taille du texte
     ctx.font = '30px Arial';
-    
+
     // Définir la couleur du texte
     ctx.fillStyle = interface.texteColor;
 
@@ -214,7 +260,7 @@ function draw() {
     ctx.textBaseline = 'middle';
 
     for (let i = 0; i < interface.texte.length; i++) {
-        ctx.fillText(interface.texte[i], canvas.width/2, canvas.height/3/2/interface.texte.length + i*canvas.height/3/interface.texte.length);
+        ctx.fillText(interface.texte[i], canvas.width / 2, canvas.height / 3 / 2 / interface.texte.length + i * canvas.height / 3 / interface.texte.length);
     }
 
 
@@ -223,9 +269,6 @@ function draw() {
 
     // Dessiner les rails à gauche
     ctx.fillStyle = '#000000';
-    /*for (let i = 0; i < railsGauche; i++) {
-        ctx.fillRect(0, canvas.height/3 + i*canvas.height*2/3/railsGauche + canvas.height*2/3/railsGauche/4, canvas.width/6, canvas.height/3/railsGauche);
-    }*/
     railsGauche.rails.forEach(element => {
         ctx.fillRect(element.position.x, element.position.y, element.taille.x, element.taille.y);
     });
@@ -240,59 +283,211 @@ function draw() {
         ctx.fillRect(element.position.x, element.position.y, element.taille.x, element.taille.y);
     });
 
+    // Trace les rails tracés
+    railsTraces.forEach(element => {
+        // Si le départ est à gauche
+        if (element.depart.type == 'railsGauche') {
+            ctx.moveTo(railsGauche.rails[element.depart.id].position.x + railsGauche.rails[element.depart.id].taille.x, railsGauche.rails[element.depart.id].position.y)
+            ctx.lineTo(stations.stations[element.arrivee.id].position.x, stations.stations[element.arrivee.id].position.y)
+            ctx.lineTo(stations.stations[element.arrivee.id].position.x, stations.stations[element.arrivee.id].position.y + stations.stations[element.arrivee.id].taille.y)
+            ctx.lineTo(railsGauche.rails[element.depart.id].position.x + railsGauche.rails[element.depart.id].taille.x, railsGauche.rails[element.depart.id].position.y + railsGauche.rails[element.depart.id].taille.y)
+        }
+        // Si le départ est à droite
+        else if (element.depart.type == 'railsDroite') {
+            ctx.moveTo(railsDroite.rails[element.depart.id].position.x, railsDroite.rails[element.depart.id].position.y)
+            ctx.lineTo(stations.stations[element.arrivee.id].position.x + stations.stations[element.arrivee.id].taille.x, stations.stations[element.arrivee.id].position.y)
+            ctx.lineTo(stations.stations[element.arrivee.id].position.x + stations.stations[element.arrivee.id].taille.x, stations.stations[element.arrivee.id].position.y + stations.stations[element.arrivee.id].taille.y)
+            ctx.lineTo(railsDroite.rails[element.depart.id].position.x, railsDroite.rails[element.depart.id].position.y + railsDroite.rails[element.depart.id].taille.y)
+        }
+        // Si le départ est une station
+        else if (element.depart.type == 'stations') {
+            if (element.arrivee.type == 'railsDroite') {
+                ctx.moveTo(stations.stations[element.depart.id].position.x + stations.stations[element.depart.id].taille.x, stations.stations[element.depart.id].position.y)
+                ctx.lineTo(stations.stations[element.depart.id].position.x + stations.stations[element.depart.id].taille.x, stations.stations[element.depart.id].position.y + stations.stations[element.depart.id].taille.y)
+                ctx.lineTo(railsDroite.rails[element.arrivee.id].position.x, railsDroite.rails[element.arrivee.id].position.y + railsDroite.rails[element.arrivee.id].taille.y)
+                ctx.lineTo(railsDroite.rails[element.arrivee.id].position.x, railsDroite.rails[element.arrivee.id].position.y)
+            }
+            else if (element.arrivee.type == 'railsGauche') {
+                ctx.moveTo(stations.stations[element.depart.id].position.x, stations.stations[element.depart.id].position.y)
+                ctx.lineTo(stations.stations[element.depart.id].position.x, stations.stations[element.depart.id].position.y + stations.stations[element.depart.id].taille.y)
+                ctx.lineTo(railsGauche.rails[element.arrivee.id].position.x + railsGauche.rails[element.arrivee.id].taille.x, railsGauche.rails[element.arrivee.id].position.y + railsGauche.rails[element.arrivee.id].taille.y)
+                ctx.lineTo(railsGauche.rails[element.arrivee.id].position.x + railsGauche.rails[element.arrivee.id].taille.x, railsGauche.rails[element.arrivee.id].position.y)
+            }
+        }
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+
+    });
+
     // Dessiner un rectangle qui relie la position du curseur à la position de l'élement sélectionné
-    if (interactionStatus.dernierElement.type != 'none') {
-        ctx.strokeStyle = '#000000';
-        ctx.beginPath();
-        if (interactionStatus.dernierElement.type == 'railsGauche') {
-            height = railsGauche.rails[interactionStatus.dernierElement.id].taille.y;
+    ctx.strokeStyle = '#000000';
+    ctx.beginPath();
+    if (interactionStatus.dernierElement.type == 'railsGauche') {
+        height = railsGauche.rails[interactionStatus.dernierElement.id].taille.y;
 
-            // Se déplacer au point de départ
-            ctx.moveTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y);
-            
-            //Dessiner le rectangle
-            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y-height/2);
-            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y+height/2);
-            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + height);
-            // Remplir le rectangle
-            ctx.fillStyle = '#000000';
-            ctx.fill();
-        }
-        if (interactionStatus.dernierElement.type == 'railsDroite') {
-            height = railsDroite.rails[interactionStatus.dernierElement.id].taille.y;
+        // Se déplacer au point de départ
+        ctx.moveTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y);
 
-            // Se déplacer au point de départ
-            ctx.moveTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y);
-            
-            //Dessiner le rectangle
-            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y-height/2);
-            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y+height/2);
-            ctx.lineTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y + height);
-            // Remplir le rectangle
-            ctx.fillStyle = '#000000';
-            ctx.fill();
-        }
-
-        // Si le rail tracé est sur une station
-        if (interactionStatus.dernierElement.type == 'railsGauche' && interactionStatus.elementActuel.type == 'stations') {
-            // Attache à le rails à la station
-            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + height);
-            ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y);
-            // Remplir le rectangle
-            ctx.fillStyle = '#000000';
-            ctx.fill();
-        }
-
-
-
-        ctx.stroke();
+        //Dessiner le rectangle
+        ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y - height / 2);
+        ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y + height / 2);
+        ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + height);
+        // Remplir le rectangle
+        ctx.fillStyle = '#000000';
+        ctx.fill();
     }
-    console.log(interactionStatus.dernierElement.type)
+    else if (interactionStatus.dernierElement.type == 'railsDroite') {
+        height = railsDroite.rails[interactionStatus.dernierElement.id].taille.y;
+
+        // Se déplacer au point de départ
+        ctx.moveTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y);
+
+        //Dessiner le rectangle
+        ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y - height / 2);
+        ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y + height / 2);
+        ctx.lineTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y + height);
+        // Remplir le rectangle
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+    }
+    else if (interactionStatus.dernierElement.type == 'stations') {
+        height = stations.stations[interactionStatus.dernierElement.id].taille.y;
+
+
+        //Si le curseur est à gauche de la station
+        if (interactionStatus.mousePosition.x < stations.stations[interactionStatus.dernierElement.id].position.x) {
+            // Se déplacer au point de départ
+            ctx.moveTo(stations.stations[interactionStatus.dernierElement.id].position.x, stations.stations[interactionStatus.dernierElement.id].position.y);
+
+            //Dessiner le rectangle
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y - height / 2);
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y + height / 2);
+            ctx.lineTo(stations.stations[interactionStatus.dernierElement.id].position.x, stations.stations[interactionStatus.dernierElement.id].position.y + height);
+            // Remplir le rectangle
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+        }
+        //Si le curseur est à droite de la station
+        else if (interactionStatus.mousePosition.x > stations.stations[interactionStatus.dernierElement.id].position.x + stations.stations[interactionStatus.dernierElement.id].taille.x) {
+            // Se déplacer au point de départ
+            ctx.moveTo(stations.stations[interactionStatus.dernierElement.id].position.x + stations.stations[interactionStatus.dernierElement.id].taille.x, stations.stations[interactionStatus.dernierElement.id].position.y);
+
+            //Dessiner le rectangle
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y - height / 2);
+            ctx.lineTo(interactionStatus.mousePosition.x, interactionStatus.mousePosition.y + height / 2);
+            ctx.lineTo(stations.stations[interactionStatus.dernierElement.id].position.x + stations.stations[interactionStatus.dernierElement.id].taille.x, stations.stations[interactionStatus.dernierElement.id].position.y + height);
+            // Remplir le rectangle
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+        }
+    }
+
+
+    ctx.closePath();
 
 
 
+    // Si le rail tracé est sur une station
+    if (interactionStatus.dernierElement.type == 'railsGauche' && interactionStatus.elementActuel.type == 'stations') {
+        // Attache à le rails à la station
+        ctx.moveTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y)
+        ctx.lineTo(stations.stations[interactionStatus.elementActuel.id].position.x, stations.stations[interactionStatus.elementActuel.id].position.y)
+        ctx.lineTo(stations.stations[interactionStatus.elementActuel.id].position.x, stations.stations[interactionStatus.elementActuel.id].position.y + stations.stations[interactionStatus.elementActuel.id].taille.y)
+        ctx.lineTo(railsGauche.rails[interactionStatus.dernierElement.id].position.x + railsGauche.rails[interactionStatus.dernierElement.id].taille.x, railsGauche.rails[interactionStatus.dernierElement.id].position.y + railsGauche.rails[interactionStatus.dernierElement.id].taille.y)
+        ctx.fillStyle = '#000000';
+        ctx.fill();
 
- 
+        interactionStatus.mouseDown = false;
+        interactionStatus.dernierElement.type = 'none';
+
+        // Ajouter la liaison au tableau
+        ajouterRails({
+            depart: {
+                type: 'railsGauche',
+                id: interactionStatus.dernierElement.id
+            },
+            arrivee: {
+                type: 'stations',
+                id: interactionStatus.elementActuel.id
+            }
+        });
+    }
+    else if (interactionStatus.dernierElement.type == 'railsDroite' && interactionStatus.elementActuel.type == 'stations') {
+        // Attache à le rails à la station
+        ctx.moveTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y)
+        ctx.lineTo(stations.stations[interactionStatus.elementActuel.id].position.x + stations.stations[interactionStatus.elementActuel.id].taille.x, stations.stations[interactionStatus.elementActuel.id].position.y)
+        ctx.lineTo(stations.stations[interactionStatus.elementActuel.id].position.x + stations.stations[interactionStatus.elementActuel.id].taille.x, stations.stations[interactionStatus.elementActuel.id].position.y + stations.stations[interactionStatus.elementActuel.id].taille.y)
+        ctx.lineTo(railsDroite.rails[interactionStatus.dernierElement.id].position.x, railsDroite.rails[interactionStatus.dernierElement.id].position.y + railsDroite.rails[interactionStatus.dernierElement.id].taille.y)
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+
+        interactionStatus.mouseDown = false;
+        interactionStatus.dernierElement.type = 'none';
+
+        // Ajouter la liaison au tableau
+        ajouterRails({
+            depart: {
+                type: 'railsDroite',
+                id: interactionStatus.dernierElement.id
+            },
+            arrivee: {
+                type: 'stations',
+                id: interactionStatus.elementActuel.id
+            }
+        });
+
+    }
+    else if (interactionStatus.dernierElement.type == 'stations' && interactionStatus.elementActuel.type == 'railsGauche') {
+        // Attache à le rails à la station
+        ctx.moveTo(stations.stations[interactionStatus.dernierElement.id].position.x, stations.stations[interactionStatus.dernierElement.id].position.y)
+        ctx.lineTo(railsGauche.rails[interactionStatus.elementActuel.id].position.x + railsGauche.rails[interactionStatus.elementActuel.id].taille.x, railsGauche.rails[interactionStatus.elementActuel.id].position.y)
+        ctx.lineTo(railsGauche.rails[interactionStatus.elementActuel.id].position.x + railsGauche.rails[interactionStatus.elementActuel.id].taille.x, railsGauche.rails[interactionStatus.elementActuel.id].position.y + railsGauche.rails[interactionStatus.elementActuel.id].taille.y)
+        ctx.lineTo(stations.stations[interactionStatus.dernierElement.id].position.x, stations.stations[interactionStatus.dernierElement.id].position.y + stations.stations[interactionStatus.dernierElement.id].taille.y)
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+
+        interactionStatus.mouseDown = false;
+        interactionStatus.dernierElement.type = 'none';
+
+        // Ajouter la liaison au tableau
+        ajouterRails({
+            depart: {
+                type: 'stations',
+                id: interactionStatus.dernierElement.id
+            },
+            arrivee: {
+                type: 'railsGauche',
+                id: interactionStatus.elementActuel.id
+            }
+        });
+    }
+
+    else if (interactionStatus.dernierElement.type == 'stations' && interactionStatus.elementActuel.type == 'railsDroite') {
+        // Attache à le rails à la station
+        ctx.moveTo(stations.stations[interactionStatus.dernierElement.id].position.x + stations.stations[interactionStatus.dernierElement.id].taille.x, stations.stations[interactionStatus.dernierElement.id].position.y)
+        ctx.lineTo(railsDroite.rails[interactionStatus.elementActuel.id].position.x, railsDroite.rails[interactionStatus.elementActuel.id].position.y)
+        ctx.lineTo(railsDroite.rails[interactionStatus.elementActuel.id].position.x, railsDroite.rails[interactionStatus.elementActuel.id].position.y + railsDroite.rails[interactionStatus.elementActuel.id].taille.y)
+        ctx.lineTo(stations.stations[interactionStatus.dernierElement.id].position.x + stations.stations[interactionStatus.dernierElement.id].taille.x, stations.stations[interactionStatus.dernierElement.id].position.y + stations.stations[interactionStatus.dernierElement.id].taille.y)
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+
+        interactionStatus.mouseDown = false;
+        interactionStatus.dernierElement.type = 'none';
+
+        // Ajouter la liaison au tableau
+        ajouterRails({
+            depart: {
+                type: 'stations',
+                id: interactionStatus.dernierElement.id
+            },
+            arrivee: {
+                type: 'railsDroite',
+                id: interactionStatus.elementActuel.id
+            }
+        });
+    }    
+
+
     // Appeler la fonction draw à chaque frame
     requestAnimationFrame(draw);
 }
