@@ -5,12 +5,15 @@ body {
   line-height: 1.5;
   color: #333;
   background-color: #fff; 
+  min-height: 100vh;
 }
 
 .carousel {
   position: relative;
   width: 100%;
   overflow: hidden;
+  height: 60vh;
+  background-color: #FECC57;
 }
 
 .carousel-container {
@@ -31,4 +34,23 @@ body {
   width: 100%;  
   height: 30vh;
   object-fit: cover;
+}
+
+.info {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.info p {
+  margin: 0;
+  padding: 0;
+  background-color: #F4D58D;
+  height: 100%;
+  margin: 8px;
+  padding: 8px;
+}
+
+.info h1 {
+  text-align: center;
+  font-size: 1.25rem;
 }
