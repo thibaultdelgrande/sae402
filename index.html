@@ -5,37 +5,40 @@
     <title>Ma carte</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-    <script>
-
-        if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
-        {
-            alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
-        }
-
-        function initMap() {
-            // Créer une carte centrée sur l'utilisateur
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var latLng = L.latLng(position.coords.latitude, position.coords.longitude);
-                var map = L.map('map').setView(latLng, 16);
-
-                // Ajouter un marqueur à l'emplacement de l'utilisateur
-                var marker = L.marker(latLng).addTo(map)
-                    .bindPopup("Vous êtes ici").openPopup();
-
-                // Ajouter une couche de tuiles OpenStreetMap
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-                    maxZoom: 19
-                }).addTo(map);
-            }, function (error) {
-                alert("Impossible de récupérer votre position : " + error.message);
-            }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
-        }
+    <script src="map.js">
     </script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body onload="initMap()">
-    <div id="map" style="height: 500px"></div>
+    <div id="map" style="height: 0px"></div>
+    <div class="carousel">
+        <div class="carousel-container">
+            <div class="carousel-item">
+                <img src="https://placehold.co/600x400" alt="">
+                <div class="info">
+                    <h1>DMC</h1>
+                    <p>
+                        DMC, ou Dollfus-Mieg et Compagnie, est une entreprise textile fondée à Mulhouse en 1746.
+                    </p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://placehold.co/600x400" alt="">
+                <div class="info">
+                    <h1>Cité Ouvrière</h1>
+                    <p>La Cité ouvrière de Mulhouse a été construite à partir de 1859 pour loger les ouvriers travaillant dans les usines textiles de la ville.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://placehold.co/300x600" alt="">
+                <div>
+                    <h1>Pa</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="carousel.js"></script>
 </body>
 
 </html>
