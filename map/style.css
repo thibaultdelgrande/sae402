@@ -6,6 +6,7 @@ body {
   color: #333;
   background-color: #fff; 
   min-height: 100vh;
+  border-color: #FECC57;
 }
 
 .carousel {
@@ -14,6 +15,7 @@ body {
   overflow: hidden;
   height: 60vh;
   background-color: #FECC57;
+  display: none;
 }
 
 .carousel-container {
@@ -53,4 +55,13 @@ body {
 .info h1 {
   text-align: center;
   font-size: 1.25rem;
+}
+
+.start {
+  position: relative;
+  width: auto;
+  overflow: hidden;
+  background-color: #F4D58D;
+  margin: 16px;
+  display: none;
 }

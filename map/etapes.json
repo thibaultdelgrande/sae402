@@ -1,0 +1,18 @@
+{
+    "etapes" : [
+        {
+            "type" : "start",
+            "destination" : [47.7491774113385, 7.315668269555352],
+            "message" : "Go to DMC to start the game",
+            "name" : "DMC"
+        },
+        {
+            "type" : "cinematic",
+            "message" : "You are in the DMC, you have to find the first clue"
+        },
+        {
+            "type" : "launch_game",
+            "url" : "/train"
+        }
+    ]
+}
