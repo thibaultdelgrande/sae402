@@ -1,12 +1,7 @@
-/*if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
+if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
 {
     alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
-}*/
-
-position = {coords: {latitude: 47.7485329, longitude: 7.3172874}};
-lastPosition = [position.coords.latitude, position.coords.longitude];
-id_status = 6;
-        document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+}
 
 fetch('etapes.json')
   .then(response => response.json())
@@ -89,7 +84,7 @@ function cinematic(){
         document.querySelector(".cinematic").onclick = function(){
             // Mettre à jour id_status
             id_status = id_status + 1;
-            document.cookie = "id_status=" + id_status;
+            document.cookie = "id_status=" + id_status + " ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
             // Cacher la cinématique
             document.querySelector(".cinematic").style.display = "none";
             // Afficher la carte
@@ -105,7 +100,7 @@ function updateMap(latLng) {
         if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < 150) {
             // Mettre à jour id_status
             id_status = id_status + 1;
-            document.cookie = "id_status=" + id_status;
+            document.cookie = "id_status=" + id_status + " ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
         }
     }
 }
@@ -174,7 +169,6 @@ function initMap() {
         }).addTo(map);
     },function (error) {
         var message;
-        /*
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 message = "Vous avez refusé la géolocalisation.";
@@ -192,7 +186,7 @@ function initMap() {
                 message = "Une erreur inconnue s'est produite.";
                 break;
         }
-        alert("Impossible de récupérer votre position : " + message);*/
+        alert("Impossible de récupérer votre position : " + message);
     }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
 }
 
