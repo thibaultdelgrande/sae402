@@ -3,56 +3,114 @@
     alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
 }*/
 
+position = {coords: {latitude: 47.7485329, longitude: 7.3172874}};
+lastPosition = [position.coords.latitude, position.coords.longitude];
+id_status = 6;
+        document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 
 fetch('etapes.json')
   .then(response => response.json())
   .then(data => {
     etapes = data.etapes;
-    console.log(etapes);
-        // Si aucune valeur pour id_status n'est trouvée dans les cookies, on initialise à 0
+    // Si aucune valeur pour id_status n'est trouvée dans les cookies, on initialise à 0
     if (document.cookie.indexOf("id_status") == -1) {
-        id_status = 0;
-        document.cookie = "id_status=0";
+        id_status = 1;
+        document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
     }
     else {
         id_status = parseInt(document.cookie.split("id_status=")[1].split(";")[0]);
     }
-
-    console.log(id_status);
-
-
-    if (etapes[id_status].type == "goto" && etapes[id_status]) {
-        var lastUpdateTime = 0;
-        var minUpdateInterval = 10000; // 10 secondes
-        var minDistanceInterval = 10; // 10 mètres
-
-        navigator.geolocation.watchPosition(function (position) {
-            var currentTime = new Date().getTime();
-            if (currentTime - lastUpdateTime < minUpdateInterval) {
-                return;
-            }
-
-            var latLng = [position.coords.latitude, position.coords.longitude];
-
-            // Vérifier si la distance parcourue est suffisante pour mettre à jour la carte
-            if (L.latLng(latLng).distanceTo(L.latLng(lastPosition)) < minDistanceInterval) {
-                return;
-            }
-
-            // Mettre à jour la position de l'utilisateur
-            lastPosition = latLng;
-
-            // Mettre à jour la carte et le marqueur de position
-            updateMap(latLng);
-        });
-    }
-
-
-
-  })
+    etape();
+})
   .catch(error => {
     console.error('Une erreur s\'est produite lors de la récupération des données JSON :', error);
-});
+}
+);
+
+
+// Détecte quelle étape est en cours
+function etape(){
+    if (etapes[id_status].type == "goto" || etapes[id_status].type == "start") {
+        goto();
+    }
+    else if (etapes[id_status].type == "cinematic" || etapes[id_status].type == "launch_game"){
+        cinematic();
+    }
+    window.requestAnimationFrame(etape);
+}
+
+async function goto(){
+    var lastUpdateTime = 0;
+    var minUpdateInterval = 10000; // 10 secondes
+    var minDistanceInterval = 10; // 10 mètres
+
+    navigator.geolocation.watchPosition(function (position) {
+        var currentTime = new Date().getTime();
+        if (!(currentTime - lastUpdateTime < minUpdateInterval)) {
+            var latLng = [position.coords.latitude, position.coords.longitude];
+
+            // Vérifier l'utilisateur est assez proche de l'objectif
+            if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < minDistanceInterval) {
+                // Mettre à jour la position de l'utilisateur
+                lastPosition = latLng;
+                lastUpdateTime = currentTime;
+            }
+        }
+
+        // Mettre à jour la carte et le marqueur de position
+        updateMap(latLng);
+    });
+}
+
+function cinematic(){
+    
+    // Cacher la carte si elle est affichée
+    document.getElementById("map").style.display = "none";
+    // Afficher le texte de la cinématique
+    document.querySelector(".cinematic").style.display = "block";
+    document.querySelector(".message").innerText = etapes[id_status].message;
+    // Changer l'image de la cinématique
+    document.querySelector(".character").src = etapes[id_status].image;
+    // Changer l'image de fond
+    document.querySelector(".character").style.backgroundImage = "url(" + etapes[id_status].background + ")";
+
+    // Si l'etapes est un launch_game
+    if (etapes[id_status].type == "launch_game"){
+        // Afficher le bouton pour lancer le jeu
+        document.querySelector(".launch-game").style.display = "block";
+        // Si l'utilisateur clique sur le bouton
+        document.querySelector(".launch-game").onclick = function(){
+            // Rediriger vers le jeu
+            window.location.href = etapes[id_status].url;
+        };
+    }
+    else {
+                // Si l'utilisateur clique sur la cinématique
+        document.querySelector(".cinematic").onclick = function(){
+            // Mettre à jour id_status
+            id_status = id_status + 1;
+            document.cookie = "id_status=" + id_status;
+            // Cacher la cinématique
+            document.querySelector(".cinematic").style.display = "none";
+            // Afficher la carte
+            document.getElementById("map").style.display = "block";
+    }
+    }
+}
+
+//Détecte si l'utilisateur est arrivé à destination
+function updateMap(latLng) {
+    // Si le type de l'etape est start ou goto
+    if (etapes[id_status].type == "start" || etapes[id_status].type == "goto") {
+        if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < 150) {
+            // Mettre à jour id_status
+            id_status = id_status + 1;
+            document.cookie = "id_status=" + id_status;
+        }
+    }
+}
+
+
 
 
 
@@ -62,7 +120,6 @@ function initMap() {
 
     // Tant que etape n'est pas défini, on attend
     if (typeof etapes == "undefined") {
-        console.log("Waiting for etapes to be defined...")
         setTimeout(initMap, 100);
         return;
     }
@@ -99,16 +156,23 @@ function initMap() {
             routeWhileDragging: true,
             lineOptions: {
                 styles: [{ color: 'red', opacity: 1, weight: 5 }]
-            }
+            },
+            //préciser le type de transport (piéton)
+            router: L.Routing.osrmv1({
+                profile: 'foot'
+            }),
+            // Cache le trajet
+            show: false,
+            // Cache le formulaire
+            collapsible: false,
         }).addTo(map);
-        
 
         // Ajouter une couche de tuiles OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
             maxZoom: 19
         }).addTo(map);
-    }, function (error) {
+    },function (error) {
         var message;
         /*
         switch (error.code) {

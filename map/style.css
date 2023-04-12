@@ -6,7 +6,9 @@ body {
   color: #333;
   background-color: #fff; 
   min-height: 100vh;
-  border-color: #FECC57;
+  background-color: #FECC57;
+  overflow: hidden;
+
 }
 
 .carousel {
@@ -54,7 +56,7 @@ body {
 
 .info h1 {
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 2rem;
 }
 
 .start {
@@ -64,4 +66,40 @@ body {
   background-color: #F4D58D;
   margin: 16px;
   display: none;
+  font-size: 2rem;
+}
+
+.cinematic {
+  display: none;
+  height: 100%;
+  width: 100%;
+}
+
+.cinematic .message{
+  font-size: 2rem;
+  text-align: center;
+  background-color: #F4D58D;
+}
+
+.cinematic .character{
+  height: 70vh;
+  width: 100%;
+  object-fit: contain;
+  background-size: cover;
+  background-position: center;
+}
+
+.launch-game{
+  display: none;
+  /*Centrer le bouton */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  background-color: #FFF;
+  padding: 8px;
+  font-size: 2rem;
+  border: #333 solid 4px;
+  border-radius: 16px;
 }
