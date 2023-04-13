@@ -27,8 +27,7 @@ fetch('etapes.json')
 );
 
 let map_initalized = false;
-let carousel_defined = true;
-
+let caroussel_initialized = false;
 
 
 // Détecte quelle étape est en cours
@@ -75,16 +74,32 @@ function goto(){
     });
 
     // Si le type de l'étape est goto
-    if (etapes[id_status].type === "goto" && carousel_defined == false){
+    if (etapes[id_status].type === "goto" && caroussel_initialized == false){
         // Afficher le carousel
         document.querySelector(".carousel").style.display = "block";
         // Récupère les données du fichier facts.json
         fetch('facts.json')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            carousel_defined = true;
+            data[etapes[id_status].name].forEach(function(fact){
+                element.innerHTML =
+                    `<div class="carousel-item">
+                        <img src="${fact.image}" alt="">
+                        <div class="info">
+                            <h1>${etapes[id_status].name}</h1>
+                            <p>
+                                ${fact.anecdote}
+                            </p>
+                        </div>
+                    </div>`;
+                document.querySelector(".carousel-container").appendChild(element);
+                console.log(element)
+            });
         })
+        .catch(error => {
+            console.error('Une erreur s\'est produite lors de la récupération des données JSON :', error);
+        });
+        caroussel_initialized = true;
     }
 }
 

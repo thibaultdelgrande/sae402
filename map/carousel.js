@@ -111,7 +111,9 @@ items.forEach((item, index) => {
       }
     });
   });
-  
+
+
+
 
 startSlide();
 
