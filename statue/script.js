@@ -31,7 +31,7 @@ function AffichageTableau() {
     document.querySelector("#tableau").innerHTML = "";
     tableau.case.forEach(function (element) {
         image = document.createElement("img");
-        image.src = "img/0.png";
+        image.src = "img/case_"+(element.id+1)+".png";
         image.dataset.id = element.id;
         image.rotation = element.rotation;
         image.style.transform = "rotate(" + image.rotation + "deg)";
@@ -77,5 +77,4 @@ function rotation() {
     console.log(tableau);
 
     AffichageTableau();
-
 }

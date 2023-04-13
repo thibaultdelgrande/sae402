@@ -1,4 +1,15 @@
 #tableau {
     display: grid;
     grid-template-columns: auto auto auto auto;
+    place-items: center;
+    width: max-content;
+    margin: 0 auto;
+
 }
+
+#tableau img{
+    max-width: 10vh;
+    max-height: 10vh;
+    border: solid 8px white;
+}
+
