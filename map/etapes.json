@@ -3,8 +3,7 @@
         {
             "type" : "start",
             "destination" : [47.7491774113385, 7.315668269555352],
-            "message" : "Go to DMC to start the game",
-            "name" : "DMC"
+            "message" : "Go to DMC to start the game"
         },
         {
             "type" : "cinematic",
@@ -44,8 +43,9 @@
             "background" : "background/dmc.jpg"
         },
         {
-            "type" : "launch_game",
-            "url" : "/train"
+            "type" : "goto",
+            "destination" : [47.7491774113385, 7.315668269555352],
+            "name" : "DMC"
         }
     ]
 }

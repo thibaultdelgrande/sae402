@@ -91,7 +91,6 @@ body {
 
 .launch-game{
   display: none;
-  /*Centrer le bouton */
   position: absolute;
   top: 50%;
   left: 50%;

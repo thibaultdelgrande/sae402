@@ -1,15 +1,19 @@
-if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
+/*if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
 {
     alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
 }
+else{
+  */
 
+
+// Récupérer les données JSON
 fetch('etapes.json')
   .then(response => response.json())
   .then(data => {
     etapes = data.etapes;
     // Si aucune valeur pour id_status n'est trouvée dans les cookies, on initialise à 0
     if (document.cookie.indexOf("id_status") == -1) {
-        id_status = 1;
+        id_status = 0;
         document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
     }
     else {
@@ -22,10 +26,25 @@ fetch('etapes.json')
 }
 );
 
+let map_initalized = false;
+let carousel_defined = true;
+
+
 
 // Détecte quelle étape est en cours
 function etape(){
-    if (etapes[id_status].type == "goto" || etapes[id_status].type == "start") {
+
+    // Tant que etape n'est pas défini, on attend
+    if (typeof etapes == "undefined") {
+        setTimeout(etape, 100);
+        return;
+    }
+
+    if (etapes[id_status].type === "goto" || etapes[id_status].type === "start") {
+        if (!map_initalized) {
+            initMap();
+            map_initalized = true;
+        }
         goto();
     }
     else if (etapes[id_status].type == "cinematic" || etapes[id_status].type == "launch_game"){
@@ -34,7 +53,7 @@ function etape(){
     window.requestAnimationFrame(etape);
 }
 
-async function goto(){
+function goto(){
     var lastUpdateTime = 0;
     var minUpdateInterval = 10000; // 10 secondes
     var minDistanceInterval = 10; // 10 mètres
@@ -51,10 +70,22 @@ async function goto(){
                 lastUpdateTime = currentTime;
             }
         }
-
         // Mettre à jour la carte et le marqueur de position
         updateMap(latLng);
     });
+
+    // Si le type de l'étape est goto
+    if (etapes[id_status].type === "goto" && carousel_defined == false){
+        // Afficher le carousel
+        document.querySelector(".carousel").style.display = "block";
+        // Récupère les données du fichier facts.json
+        fetch('facts.json')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            carousel_defined = true;
+        })
+    }
 }
 
 function cinematic(){
@@ -95,13 +126,10 @@ function cinematic(){
 
 //Détecte si l'utilisateur est arrivé à destination
 function updateMap(latLng) {
-    // Si le type de l'etape est start ou goto
-    if (etapes[id_status].type == "start" || etapes[id_status].type == "goto") {
-        if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < 150) {
-            // Mettre à jour id_status
-            id_status = id_status + 1;
-            document.cookie = "id_status=" + id_status + " ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-        }
+    if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < 150) {
+        // Mettre à jour id_status
+        id_status = id_status + 1;
+        document.cookie = "id_status=" + id_status + " ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
     }
 }
 
@@ -112,12 +140,6 @@ function updateMap(latLng) {
 function initMap() {
     // Adapter la taille de l'écran pour qu'elle prenne le tier supérieur de l'image
     var map = document.getElementById("map");
-
-    // Tant que etape n'est pas défini, on attend
-    if (typeof etapes == "undefined") {
-        setTimeout(initMap, 100);
-        return;
-    }
 
     if (etapes[id_status].type == "start"){
         map.style.height = (window.innerHeight / 1.25) + "px";
@@ -167,7 +189,7 @@ function initMap() {
             attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
             maxZoom: 19
         }).addTo(map);
-    },function (error) {
+    }/*,function (error) {
         var message;
         switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -187,7 +209,11 @@ function initMap() {
                 break;
         }
         alert("Impossible de récupérer votre position : " + message);
-    }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
+    }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });*/);
 }
 
-document.onload = initMap();
+document.onload = etape();
+
+
+  
+//}
