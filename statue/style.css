@@ -1,0 +1,108 @@
+body{
+    background-color: #FECC57;
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    min-width: 100vw;
+    margin: 0;
+    padding: 0;
+
+}
+
+#presentation-container{
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#presentation {
+    background-color: #F4D58D;
+    border-radius: 16px;
+    max-width: 30vh;
+    padding: 16px;
+    text-align: center;
+}
+
+#game{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#tableau {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    place-items: center;
+    width: max-content;
+    margin: 0 auto;
+
+}
+
+#tableau img{
+    max-width: 8vh;
+    max-height: 8vh;
+    border: solid 8px #FECC57;
+}
+
+#result{
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#result img{
+    max-width: 40vh;
+    max-height: 40vh;
+    border: solid 8px #FECC57;
+    opacity: 0.6;
+}
+
+#roue{
+    display: absolute;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F4D58D;
+    padding: 16px;
+    border-radius: 16px;
+    border: #000;
+    border-style: solid;
+    border-width: 8px;
+}
+
+#win{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F4D58D;
+    padding: 16px;
+    border-radius: 16px;
+    border: #000;
+    border-style: solid;
+    border-width: 8px;
+
+}
+
+#win a{
+    text-decoration: none;
+    color: #000;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 16px;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: #000;
+    border-style: solid;
+}
