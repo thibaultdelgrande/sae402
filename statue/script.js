@@ -30,6 +30,9 @@ function AffichageTableau() {
     // Si le tableau est dans l'odre, on affiche un message de victoire
     if (tableau.case.every((element, index) => element.id === index)) {
         document.querySelector("#win").style.display = "flex";
+        id_status = parseInt(document.cookie.split("id_status=")[1].split(";")[0]);
+        id_status ++;
+        document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
         return;
     }
 
@@ -44,15 +47,6 @@ function AffichageTableau() {
         image.addEventListener("click", clicked);
         document.querySelector("#tableau").appendChild(image);
     });
-
-    // Créer les roues sur lesquelles on peut cliquer pour faire tourner les cases
-    for (let i = 0; i < tableau.width; i++) {
-            let roue = document.createElement("img");
-            roue.src = "img/roue.svg";
-            roue.dataset.id = i;
-            roue.addEventListener("click", clicked);
-            document.querySelector("#roues").appendChild(roue);
-    }
 }
 
 // position_case correspond à la position de la case en haut à gauche
@@ -97,13 +91,18 @@ function rotate(position_case){
 // Mélange le tableau
 
 function melange() {
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 10; i++) {
         let position_case = Math.floor(Math.random() * (tableau.width * tableau.height - 1));
         rotate(position_case);
     }
 }
 
 
+
 melange();
 
 AffichageTableau();
+
+document.querySelector("#presentation").addEventListener("click", function () {
+    document.querySelector("#presentation-container").style.display = "none";
+} );

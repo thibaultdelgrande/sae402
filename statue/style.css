@@ -8,6 +8,24 @@ body{
 
 }
 
+#presentation-container{
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#presentation {
+    background-color: #F4D58D;
+    border-radius: 16px;
+    max-width: 30vh;
+    padding: 16px;
+    text-align: center;
+}
+
 #game{
     display: flex;
     align-items: center;
