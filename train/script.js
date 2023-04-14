@@ -36,6 +36,7 @@ let interactionStatus = {
 }
 
 let railsTraces = [];
+let trains = [];
 
 // Redimensionner le canvas en fonction de la taille de l'écran
 function resizeCanvas() {
@@ -486,6 +487,82 @@ function draw() {
             }
         });
     }    
+
+    // Créé des trains qui apparaissent àléatoirement à gauche et à droite sur les rails
+    if (Math.random() < 0.01) {
+        // De quel côté le train va apparaître
+        let cote = Math.random() < 0.5 ? 'gauche' : 'droite';
+
+        let idRail = 0;
+        if (cote == 'gauche') {
+        // Sur quel rail le train va apparaître
+        idRail = Math.floor(Math.random() * railsGauche.rails.length);
+        }
+        else if (cote == 'droite') {
+            idRail = Math.floor(Math.random() * railsDroite.rails.length);
+        }
+
+
+
+        // Créé le train
+        let train = {
+            position: {
+                x: cote == 'gauche' ? railsGauche.rails[idRail].position.x + railsGauche.rails[idRail].taille.x : railsDroite.rails[idRail].position.x,
+                y: cote == 'gauche' ? railsGauche.rails[idRail].position.y + railsGauche.rails[idRail].taille.y / 2 : railsDroite.rails[idRail].position.y + railsDroite.rails[idRail].taille.y / 2
+            },
+            direction: cote,
+            vitesse: 1
+        }
+        console.log(train);
+
+        // Determiner le rail du train qui se trouve de l'autre côté
+        let idRailArrivee = 0;
+        if (cote == 'gauche') {
+            idRailArrivee = railsDroite.rails.length - 1 - idRail;
+        }
+        else if (cote == 'droite') {
+            idRailArrivee = railsGauche.rails.length - 1 - idRail;
+        }
+    }
+
+    // Dessinne les trains
+    for (let i = 0; i < trains.length; i++) {
+        ctx.beginPath();
+        ctx.arc(trains[i].position.x, trains[i].position.y, 35, 0, 2 * Math.PI);
+        ctx.fillStyle = '#777';
+        ctx.fill();
+        ctx.closePath();
+
+
+        // Si le train est sur un rail relié à une station
+        for (let j = 0; j < rails.length; j++) {
+            if (trains[i].direction == 'gauche' && rails[j].depart.type == 'railsGauche' && rails[j].depart.id == idRail && rails[j].arrivee.type == 'stations') {
+                // Si le train est sur le rail de la station
+                if (trains[i].position.x <= stations.stations[rails[j].arrivee.id].position.x + stations.stations[rails[j].arrivee.id].taille.x) {
+                    // Déplace le train sur le rail de la station
+                    trains[i].position.x = stations.stations[rails[j].arrivee.id].position.x + stations.stations[rails[j].arrivee.id].taille.x;
+                    trains[i].direction = 'droite';
+                }
+            }
+            else if (trains[i].direction == 'droite' && rails[j].depart.type == 'railsDroite' && rails[j].depart.id == idRail && rails[j].arrivee.type == 'stations') {
+                // Si le train est sur le rail de la station
+                if (trains[i].position.x >= stations.stations[rails[j].arrivee.id].position.x) {
+                    // Déplace le train sur le rail de la station
+                    trains[i].position.x = stations.stations[rails[j].arrivee.id].position.x;
+                    trains[i].direction = 'gauche';
+                }
+            }
+        }
+
+        // Déplace les trains
+        if (trains[i].direction == 'droite') {
+            trains[i].position.x += trains[i].vitesse;
+        }
+        else if (trains[i].direction == 'gauche') {
+            trains[i].position.x -= trains[i].vitesse;
+
+        }
+    }
 
 
     // Appeler la fonction draw à chaque frame
