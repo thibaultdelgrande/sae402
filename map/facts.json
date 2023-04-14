@@ -1,0 +1,81 @@
+{
+    "DMC": [
+        {
+            "anecdote": "DMC, or Dollfus-Mieg et Compagnie, is a textile company founded in Mulhouse in 1746.",
+            "image_path": "dmc_1.jpg"
+        },
+        {
+            "anecdote": "DMC is particularly known for its brand of embroidery thread, called \"Mouliné Spécial\".",
+            "image_path": "dmc_2.jpg"
+        },
+        {
+            "anecdote": "The headquarters of DMC in Mulhouse is located in a historic building that was constructed in 1846.",
+            "image_path": "dmc_3.jpg"
+        },
+        {
+            "anecdote": "A maximum of 30000 people have worked at DMC.",
+            "image_path": "dmc_4.jpg"
+        },
+        {
+            "anecdote": "In 1800, the company changed its name to Dollfus-Mieg & Compagnie, or DMC, after the marriage of Jean-Henri Dollfus with Anne-Marie Mieg.",
+            "image_path": "dmc_5.jpg"
+        }
+    ],
+    "Cité ouvrière": [
+        {
+            "anecdote": "The Cité ouvrière of Mulhouse was built starting in 1859 to house workers working in the city's textile factories.",
+            "image_path": "cite_ouvriere_1.jpg"
+        },
+        {
+            "anecdote": "The design of the houses in the Cité ouvrière was done by 2mile Muller, whose name is now given to a hospital.",
+            "image_path": "cite_ouvriere_2.jpg"
+        },
+        {
+            "anecdote": "The dwellings in the Cité ouvrière are called \"Carré Mulhousien\".",
+            "image_path": "cite_ouvriere_3.jpg"
+        },
+        {
+            "anecdote": "Ahead of its time, a rental-purchase system for houses was implemented.",
+            "image_path": "cite_ouvriere_4.jpg"
+        },
+        {
+            "anecdote": "It was designed by young industrialists from the city, including Jean Dollfus from the Dollfus-Mieg company, textile manufacturers since 1746 and coal owners since 1812.",
+            "image_path": "cite_ouvriere_5.jpg"
+        },
+        {
+            "anecdote": "The Cité ouvrière of Mulhouse brought together more than 10% of the inhabitants of the municipality of Mulhouse at the end of the 19th century.",
+            "image_path": "cite_ouvriere_6.jpg"
+        },
+        {
+            "anecdote": "The Cité ouvrière of Mulhouse is considered one of the most remarkable model housing projects in Europe.",
+            "image_path": "cite_ouvriere_7.jpg"
+        },
+        {
+            "anecdote": "The Cité ouvrière is open to visitors and offers guided tours to discover its history and architecture.",
+            "image_path": "cite_ouvriere_8.jpg"
+        },
+        {
+            "anecdote": "The Cité ouvrière was built in several stages from 1853 to 1897 and has 1,243 single-family homes.",
+            "image_path": "cite_ouvriere_9.jpg"
+        }
+    ],
+    "Ancienne gare de Mulhouse": [
+        {
+            "anecdote": "The former Mulhouse train station was built in 1841 and was the city's first train station.",
+            "image_path": ""
+        },
+        {
+            "anecdote": "It was designed by the French architect Louis-François Cassas.",
+            "image_path": ""
+        },
+        {
+            "anecdote": "During World War II, the former Mulhouse train station was severely damaged.",
+            "image_path": ""
+        },
+        {
+            "anecdote": "It was replaced by another train station in 1906.",
+            "image_path": ""
+        }
+    ]
+}
+  
