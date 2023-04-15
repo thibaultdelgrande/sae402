@@ -6,3 +6,35 @@ canvas {
     border: 1px solid black;
     overflow: hidden;
 }
+
+
+#win{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F4D58D;
+    padding: 16px;
+    border-radius: 16px;
+    border: #000;
+    border-style: solid;
+    border-width: 8px;
+
+}
+
+#win a{
+    text-decoration: none;
+    color: #000;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 16px;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: #000;
+    border-style: solid;
+}
