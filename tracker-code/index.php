@@ -32,6 +32,8 @@
     if(isset($_POST['numero'])) {
         if($_POST['numero'] == 528) {
             echo "<p class='answer' style='color:green;'>Well done, you are right!</p>";
+            setcookie('id_status', '13');
+            header('Location: /map');
         } else {
             echo "<p class='answer' style='color:red;'>Sorry, try again!</p>";
         }
