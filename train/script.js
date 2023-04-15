@@ -2,6 +2,8 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+let id_railsTrace = 0;
+let score = 0;
 // Créer la classe Train
 
 let interface = {
@@ -10,7 +12,7 @@ let interface = {
     width: 0,
     height: 0,
     color: '#F4D58D',
-    texte: ['Join the rails to help the trains moving'],
+    texte: ['Join the rails to help the trains moving',0],
     texteColor: '#14110F'
 }
 
@@ -194,41 +196,47 @@ function ajouterRails(objet) {
     //Créer un une liste des rails temporaire
     let railsTracesTemp = [];
     railsTraces.forEach( rail =>{
-        if (
-            //Si le type de départ et d'arrivée sont les mêmes
-            (objet.depart.type == rail.depart.type) && (objet.arrivee.type == rail.arrivee.type) && (
-                //Si l'id de départ est le même
-                (objet.depart.id == rail.depart.id) ||
-                //Si l'id d'arrivée est le même
-                (objet.arrivee.id == rail.arrivee.id) ||
-                //Si l'id de objet de départ est supérieur à l'id de rail de départ et que l'id de objet d'arrivée est inférieur à l'id de rail d'arrivée
-                (objet.depart.id > rail.depart.id) && (objet.arrivee.id < rail.arrivee.id) ||
-                //Si l'id de objet de départ est inférieur à l'id de rail de départ et que l'id de objet d'arrivée est supérieur à l'id de rail d'arrivée
-                (objet.depart.id < rail.depart.id) && (objet.arrivee.id > rail.arrivee.id)
-            ) ||
-            //Si le type de départ et d'arrivée sont inversés
-            (objet.depart.type == rail.arrivee.type) && (objet.arrivee.type == rail.depart.type) && (
-                //Si l'id de départ de objet est le même que l'id d'arrivée de rail
-                (objet.depart.id == rail.arrivee.id) ||
-                //Si l'id d'arrivée de objet est le même que l'id de départ de rail
-                (objet.arrivee.id == rail.depart.id) ||
-                //Si l'id de objet de départ est supérieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est inférieur à l'id de rail de départ
-                (objet.depart.id > rail.arrivee.id) && (objet.arrivee.id < rail.depart.id) ||
-                //Si l'id de objet de départ est inférieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est supérieur à l'id de rail de départ
-                (objet.depart.id < rail.arrivee.id) && (objet.arrivee.id > rail.depart.id)
-            )
-
+        console.log(rail);
+        // Aucun train n'est sur le rail
+            console.log(rail);
+            if (
+                //Si le type de départ et d'arrivée sont les mêmes
+                (objet.depart.type == rail.depart.type) && (objet.arrivee.type == rail.arrivee.type) && (
+                    //Si l'id de départ est le même
+                    (objet.depart.id == rail.depart.id) ||
+                    //Si l'id d'arrivée est le même
+                    (objet.arrivee.id == rail.arrivee.id) ||
+                    //Si l'id de objet de départ est supérieur à l'id de rail de départ et que l'id de objet d'arrivée est inférieur à l'id de rail d'arrivée
+                    (objet.depart.id > rail.depart.id) && (objet.arrivee.id < rail.arrivee.id) ||
+                    //Si l'id de objet de départ est inférieur à l'id de rail de départ et que l'id de objet d'arrivée est supérieur à l'id de rail d'arrivée
+                    (objet.depart.id < rail.depart.id) && (objet.arrivee.id > rail.arrivee.id)
+                ) ||
+                //Si le type de départ et d'arrivée sont inversés
+                (objet.depart.type == rail.arrivee.type) && (objet.arrivee.type == rail.depart.type) && (
+                    //Si l'id de départ de objet est le même que l'id d'arrivée de rail
+                    (objet.depart.id == rail.arrivee.id) ||
+                    //Si l'id d'arrivée de objet est le même que l'id de départ de rail
+                    (objet.arrivee.id == rail.depart.id) ||
+                    //Si l'id de objet de départ est supérieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est inférieur à l'id de rail de départ
+                    (objet.depart.id > rail.arrivee.id) && (objet.arrivee.id < rail.depart.id) ||
+                    //Si l'id de objet de départ est inférieur à l'id de rail d'arrivée et que l'id de objet d'arrivée est supérieur à l'id de rail de départ
+                    (objet.depart.id < rail.arrivee.id) && (objet.arrivee.id > rail.depart.id)
+                )
             )
             {
+                // Si le rail est traversé
+                if (rail.traverse) {
+                    objet = rail;
+                }
 
             }
-            else
-            {
-                railsTracesTemp.push(rail);
-            }
+        else
+        {
+            railsTracesTemp.push(rail);
+        }
+
     });
     railsTraces = railsTracesTemp;
-    
     //Ajoute le rail
     railsTraces.push(objet);
 }
@@ -405,6 +413,8 @@ function draw() {
 
         // Ajouter la liaison au tableau
         ajouterRails({
+            traverse: false,
+            id: id_railsTrace,
             depart: {
                 type: 'railsGauche',
                 id: interactionStatus.dernierElement.id
@@ -414,6 +424,7 @@ function draw() {
                 id: interactionStatus.elementActuel.id
             }
         });
+        id_railsTrace++;
     }
     else if (interactionStatus.dernierElement.type == 'railsDroite' && interactionStatus.elementActuel.type == 'stations') {
         // Attache à le rails à la station
@@ -515,10 +526,13 @@ function draw() {
             cote_arrivee = 'gauche';
         }
 
+        //Si le train n'est 
+
         // Créer le train
         let train = {
             position: position,
             cote_depart: cote,
+            cote_arrivee: cote_arrivee,
             vitesse: {
                 x: 0,
                 y: 0
@@ -526,9 +540,14 @@ function draw() {
             id_depart: id,
             traverse: false,
             objectif: {
+                type: 'none',
                 x: 0,
-                y: 0
+                y: 0,
+                id: 0
             },
+            railTraverse: {
+                id: 0,
+            }
         }
         
         trains.push(train);
@@ -544,94 +563,160 @@ function draw() {
     }
 
     // Déplacer les trains
-    for (let i = 0; i < trains.length; i++) {
-        // Si le train au centre d'un rail (+/- 5px)
-        if (trains[i].cote_depart == 'gauche' && trains[i].position.x > railsGauche.rails[trains[i].id_depart].position.x - 5 + (railsGauche.rails[trains[i].id_depart].taille.x/2) && trains[i].position.x < railsGauche.rails[trains[i].id_depart].position.x + 5 + (railsGauche.rails[trains[i].id_depart].taille.x/2)) {
+    trains.forEach(train => {
+        // Si le train au bord du rail de départ
+        if ((train.cote_depart == 'gauche' && train.position.x > railsGauche.rails[train.id_depart].position.x - 5 + (railsGauche.rails[train.id_depart].taille.x) && train.position.x < railsGauche.rails[train.id_depart].position.x + 5 + (railsGauche.rails[train.id_depart].taille.x)) && !(train.traverse)) {
             // Si le rail sur lequel le train est est relié à un station ou si une station est reliée au rail sur lequel le train est
-            for (let j = 0; j < railsTraces.length; j++) {
-                if (railsTraces[j].depart.type == 'railsGauche' && railsTraces[j].depart.id == trains[i].id_depart && railsTraces[j].arrivee.type == 'stations') {
-                    trains[i].objectif = {
-                        x : stations.stations[railsTraces[j].arrivee.id].position.x + (stations.stations[railsTraces[j].arrivee.id].taille.x/2),
-                        y : stations.stations[railsTraces[j].arrivee.id].position.y + (stations.stations[railsTraces[j].arrivee.id].taille.y/2)
-                    }
-                    trains[i].traverse = true;
-                    // Compte le nombre de pixels à parcourir en x et en y
-                    let x = trains[i].objectif.x - trains[i].position.x;
-                    let y = trains[i].objectif.y - trains[i].position.y;
-                    // Calcule la vitesse en x et en y
-                    if (x > y) {
-                        trains[i].objectif.vy = y / x;
-                        trains[i].objectif.vx = 1;
-                    }
-                    else {
-                        trains[i].objectif.vx = x / y;
-                        trains[i].objectif.vy = 1;
-                    }
+            for (let i = 0; i < railsTraces.length; i++) {
+                let rail = railsTraces[i];
+                if (rail.depart.type == 'railsGauche' && rail.depart.id == train.id_depart && rail.arrivee.type == 'stations' && !(rail.traverse)) {
+                    train.objectif.x = stations.stations[rail.arrivee.id].position.x;
+                    train.objectif.y = stations.stations[rail.arrivee.id].position.y + stations.stations[rail.arrivee.id].taille.y / 2;
+                    train.objectif.type = 'stations';
+                    train.objectif.id = rail.arrivee.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
                 }
-                if (railsTraces[j].arrivee.type == 'railsGauche' && railsTraces[j].arrivee.id == trains[i].id_depart && railsTraces[j].depart.type == 'stations') {
-                    trains[i].objectif = {
-                        x : stations.stations[railsTraces[j].depart.id].position.x + (stations.stations[railsTraces[j].depart.id].taille.x/2),
-                        y : stations.stations[railsTraces[j].depart.id].position.y + (stations.stations[railsTraces[j].depart.id].taille.y/2)
+                if (rail.depart.type == 'stations' && rail.arrivee.type == 'railsGauche' && rail.arrivee.id == train.id_depart && !(rail.traverse)) {
+                    train.objectif.x = stations.stations[rail.depart.id].position.x;
+                    train.objectif.y = stations.stations[rail.depart.id].position.y + stations.stations[rail.depart.id].taille.y / 2;
+                    train.objectif.type = 'stations';
+                    train.objectif.id = rail.depart.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                    
+                }
+            };
+        }
+        else if ((train.cote_depart == 'droite' && train.position.x > railsDroite.rails[train.id_depart].position.x - 5 && train.position.x < railsDroite.rails[train.id_depart].position.x + 5) && !(train.traverse)) {
+            for (let i = 0; i < railsTraces.length; i++) {
+                let rail = railsTraces[i];
+                if (rail.depart.type == 'railsDroite' && rail.depart.id == train.id_depart && rail.arrivee.type == 'stations' && !(rail.traverse)) {
+                    train.objectif.x = stations.stations[rail.arrivee.id].position.x + stations.stations[rail.arrivee.id].taille.x;
+                    train.objectif.y = stations.stations[rail.arrivee.id].position.y + stations.stations[rail.arrivee.id].taille.y / 2;
+                    train.objectif.type = 'stations';
+                    train.objectif.id = rail.arrivee.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                
+                }
+                if (rail.depart.type == 'stations' && rail.arrivee.type == 'railsDroite' && rail.arrivee.id == train.id_depart && !(rail.traverse)) {
+                    train.objectif.x = stations.stations[rail.depart.id].position.x + stations.stations[rail.depart.id].taille.x;
+                    train.objectif.y = stations.stations[rail.depart.id].position.y + stations.stations[rail.depart.id].taille.y / 2;
+                    train.objectif.type = 'stations';
+                    train.objectif.id = rail.depart.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                }
+            };
+
+        }
+        //Si le train vient de gauche et est sur une station
+        else if ((train.cote_depart == 'gauche' && train.objectif.type == 'stations' && train.position.x > stations.stations[train.objectif.id].position.x + stations.stations[train.objectif.id].taille.x - 5 && train.position.x < stations.stations[train.objectif.id].position.x + stations.stations[train.objectif.id].taille.x + 5) && !(train.traverse)) {
+            for (let i = 0; i < railsTraces.length; i++) {
+                let rail = railsTraces[i];
+                if (rail.depart.type == 'stations' && rail.depart.id == train.objectif.id && rail.arrivee.type == 'railsDroite' && !(rail.traverse)) {
+                    train.objectif.x = railsDroite.rails[rail.arrivee.id].position.x;
+                    train.objectif.y = railsDroite.rails[rail.arrivee.id].position.y + railsDroite.rails[rail.arrivee.id].taille.y / 2;
+                    train.objectif.type = 'railsDroite';
+                    train.objectif.id = rail.arrivee.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                }
+                if (rail.depart.type == 'railsDroite' && rail.arrivee.type == 'stations' && rail.arrivee.id == train.objectif.id && !(rail.traverse)) {
+                    train.objectif.x = railsDroite.rails[rail.depart.id].position.x;
+                    train.objectif.y = railsDroite.rails[rail.depart.id].position.y + railsDroite.rails[rail.depart.id].taille.y/2;
+                    train.objectif.type = 'railsDroite';
+                    train.objectif.id = rail.depart.id;
+                    train.traverse = true;
+                    train.railTraverse.id = rail.id;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                }
+            };
+        }
+        //Si le train vient de droite et est sur une station
+        else if ((train.cote_depart == 'droite' && train.objectif.type == 'stations' && train.position.x > stations.stations[train.objectif.id].position.x - 5 && train.position.x < stations.stations[train.objectif.id].position.x + 5) && !(train.traverse)) {
+            for (let i = 0; i < railsTraces.length; i++) {
+                let rail = railsTraces[i];
+                if (rail.depart.type == 'stations' && rail.depart.id == train.objectif.id && rail.arrivee.type == 'railsGauche' && !(rail.traverse)) {
+                    train.objectif.x = railsGauche.rails[rail.arrivee.id].position.x + railsGauche.rails[rail.arrivee.id].taille.x;
+                    train.objectif.y = railsGauche.rails[rail.arrivee.id].position.y + railsGauche.rails[rail.arrivee.id].taille.y / 2;
+                    train.objectif.type = 'railsGauche';
+                    train.objectif.id = rail.arrivee.id;
+                    train.traverse = true;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                }
+                if (rail.depart.type == 'railsGauche' && rail.arrivee.type == 'stations' && rail.arrivee.id == train.objectif.id && !(rail.traverse)) {
+                    train.objectif.x = railsGauche.rails[rail.depart.id].position.x + railsGauche.rails[rail.depart.id].taille.x;
+                    train.objectif.y = railsGauche.rails[rail.depart.id].position.y + railsGauche.rails[rail.depart.id].taille.y / 2;
+                    train.objectif.type = 'railsGauche';
+                    train.objectif.id = rail.depart.id;
+                    train.traverse = true;
+                    // Détermine la vitesse du train pour qu'il arrive à l'objectif en ligne droite
+                    train.vitesse.x = (train.objectif.x - train.position.x) / 200;
+                    train.vitesse.y = (train.objectif.y - train.position.y) / 200;
+                    railsTraces[i].traverse = true;
+                }
+            };
+        }
+
+
+        //Si le train est en train de traverser
+        else if (train.traverse) {
+            train.position.x += train.vitesse.x;
+            train.position.y += train.vitesse.y;
+            // Si le train est arrivé à l'objectif
+            if (train.position.x > train.objectif.x - 5 && train.position.x < train.objectif.x + 5 && train.position.y > train.objectif.y - 5 && train.position.y < train.objectif.y + 5) {
+                train.traverse = false;
+                railsTraces.forEach(rail => {
+                    if (rail.id == train.railTraverse.id) {
+                        rail.traverse = false;
                     }
-                    trains[i].traverse = true;
-                    let x = trains[i].objectif.x - trains[i].position.x;
-                    let y = trains[i].objectif.y - trains[i].position.y;
-                    // Calcule la vitesse en x et en y
-                    if (x > y) {
-                        trains[i].objectif.vy = y / x;
-                        trains[i].objectif.vx = 1;
-                    }
-                    else {
-                        trains[i].objectif.vx = x / y;
-                        trains[i].objectif.vy = 1;
-                    }
+                });
+                // Si le train est arrivé aux rails d'en face ajouter des points
+                if (train.objectif.type == 'railsGauche' || train.objectif.type == 'railsDroite') {
+                    score += 1;
+                    interface.texte[1] = score;
                 }
             }
         }
-        
-        else{
-            if (trains[i].cote_depart == 'gauche') {
-                trains[i].position.x += trains[i].vitesse;
+        else {
+            //Déplacer le train automatiquement
+            if (train.cote_depart == 'gauche') {
+                train.position.x += 1;
             }
-            if (trains[i].cote_depart == 'droite') {
-                trains[i].position.x -= trains[i].vitesse;
-            }
-            // Si le train est sorti du canvas, le supprimer
-            if (trains[i].position.x > canvas.width + 50 || trains[i].position.x < -50) {
-                trains.splice(i, 1);
-            }
-        }
-
-        console.log(trains)
-        if (trains[i].traverse) {
-            // Déplacer le train vers l'objectif en ligne droite
-
-            // Si le train est arrivé à destination
-            if (x < 5 && x > -5 && y < 5 && y > -5) {
-                trains[i].traverse = false;
-            }
-            else {
-                if (trains[i].position.x < trains[i].objectif.x) {
-                    trains[i].position.x += vx;
-                }
-                if (trains[i].position.x > trains[i].objectif.x) {
-                    trains[i].position.x -= vx;
-                }
-                if (trains[i].position.y < trains[i].objectif.y) {
-                    trains[i].position.y += vy;
-                }
-                if (trains[i].position.y > trains[i].objectif.y) {
-                    trains[i].position.y -= vy;
-                }
+            else if (train.cote_depart == 'droite') {
+                train.position.x -= 1;
             }
 
         }
-
-
-
-    }
-
-
+    });
     // Appeler la fonction draw à chaque frame
     requestAnimationFrame(draw);
 }
