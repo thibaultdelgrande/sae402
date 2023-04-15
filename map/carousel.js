@@ -1,15 +1,21 @@
 const carousel = document.querySelector('.carousel');
 const container = carousel.querySelector('.carousel-container');
-const items = carousel.querySelectorAll('.carousel-item');
+let items;
+
+let carousel_initialized = false;
 
 let currentIndex = 0;
 let itemWidth = 0;
 let slideInterval;
 
+
+
 function init() {
+  // Tant que item n'est pas définit, on attend
   itemWidth = items[0].offsetWidth;
   container.style.transform = `translateX(${-itemWidth * currentIndex}px)`;
   updateItems();
+  startSlide();
 }
 
 function slide(direction) {
@@ -25,29 +31,7 @@ function slide(direction) {
 function updateItems() {
   if (currentIndex === 0) {
     items[items.length - 1].classList.add('prev');
-    const carousel = document.querySelector('.carousel');
-    const container = carousel.querySelector('.carousel-container');
-    const items = carousel.querySelectorAll('.carousel-item');
-    
-    let currentIndex = 0;
-    let itemWidth = 0;
-    let slideInterval;
-    
-    function init() {
-      itemWidth = items[0].offsetWidth;
-      container.style.transform = `translateX(${-itemWidth * currentIndex}px)`;
-      updateItems();
-    }
-    
-    function slide(direction) {
-      if (direction === 'prev') {
-        currentIndex--;
-      } else {
-        currentIndex++;
-      }
-      container.style.transform = `translateX(${-itemWidth * currentIndex}px)`;
-      updateItems();
-    } items[1].classList.remove('next');
+    items[1].classList.remove('next');
   } else if (currentIndex === items.length - 1) {
     items[0].classList.remove('prev');
     items[currentIndex - 1].classList.add('next');
@@ -96,26 +80,71 @@ function stopSlide() {
   clearInterval(slideInterval);
 }
 
-items.forEach((item, index) => {
-    item.addEventListener('click', (event) => {
-      const boundingRect = item.getBoundingClientRect();
-      const clickX = event.clientX - boundingRect.left;
-      if (clickX < boundingRect.width / 2) {
-        if (currentIndex > 0) {
-          slide('prev');
-        }
-      } else {
-        if (currentIndex < items.length - 1) {
-          slide('next');
-        }
+async function initCarousel() {
+  fetch('etapes.json')
+    .then(response => response.json())
+    .then(data => {
+      etapes = data.etapes;
+      // Si aucune valeur pour id_status n'est trouvée dans les cookies, on initialise à 0
+      if (document.cookie.indexOf("id_status") == -1) {
+          id_status = 0;
+          document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
       }
-    });
-  });
+      else {
+          id_status = parseInt(document.cookie.split("id_status=")[1].split(";")[0]);
+      }
+      // Si le type de l'étape est goto
+      if (etapes[id_status].type === "goto"){
+        // Afficher le carousel
+        document.querySelector(".carousel").style.display = "block";
+        // Récupère les données du fichier facts.json
+        fetch('facts.json')
+        .then(response => response.json())
+        .then(data => {
+            data[etapes[id_status].name].forEach(function(fact){
+                let element = document.createElement("div");
+                element.classList.add("carousel-item");
+                element.innerHTML = `
+                        <img src="img_anecdotes/${fact.image_path}" alt="">
+                        <div class="info">
+                            <h1>${etapes[id_status].name}</h1>
+                            <p>
+                                ${fact.anecdote}
+                            </p>
+                        </div>`;
+                document.querySelector(".carousel-container").appendChild(element);
+            });
+              items = carousel.querySelectorAll('.carousel-item');
+              items.forEach((item) => {
+                item.addEventListener('click', (event) => {
+                  const boundingRect = item.getBoundingClientRect();
+                  const clickX = event.clientX - boundingRect.left;
+                  if (clickX < boundingRect.width / 2) {
+                    if (currentIndex > 0) {
+                      slide('prev');
+                    }
+                  } else {
+                    if (currentIndex < items.length - 1) {
+                      slide('next');
+                    }
+                  }
+                });
+              init();
+            });
+        })
+        .catch(error => console.log(error));
+      }
+      else {
+        document.querySelector(".carousel").style.display = "none";
+        // On attends et on relance la fonction
+        setTimeout(initCarousel, 1000);
+      }
+  })
+}
+
+initCarousel();
 
 
 
 
-startSlide();
 
-
-init();

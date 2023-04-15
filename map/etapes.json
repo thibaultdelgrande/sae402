@@ -3,7 +3,8 @@
         {
             "type" : "start",
             "destination" : [47.7491774113385, 7.315668269555352],
-            "message" : "Go to DMC to start the game"
+            "message" : "Go to DMC to start the game",
+            "destination_name" : "DMC"
         },
         {
             "type" : "cinematic",
@@ -37,7 +38,7 @@
         },
         {
             "type" : "launch_game",
-            "url" : "/train",
+            "url" : "/statue",
             "message" : "Can you help me?",
             "image" : "sprites/antoine.png",
             "background" : "background/dmc.jpg"
@@ -63,13 +64,21 @@
         {
             "type" : "goto",
             "destination" : [47.7521132,7.3177468],
-            "name" : "Cité Ouvrière"
+            "name" : "DMC",
+            "destination_name" : "Cité ouvrière"
         },
         {
             "type": "cinematic",
             "message": "...",
             "image": "sprites/ghost.png",
             "background": "background/cite_ouvriere.jpg"
+        },
+        {
+            "type" :"launch_game",
+            "message": "It looks like he's trying to show me something by the path he's taking.",
+            "image": "sprites/antoine.png",
+            "background": "background/cite_ouvriere.jpg",
+            "url": "/statue"
         }
 
     ]
