@@ -62,19 +62,19 @@
     "Ancienne gare de Mulhouse": [
         {
             "anecdote": "The former Mulhouse train station was built in 1841 and was the city's first train station.",
-            "image_path": ""
+            "image_path": "train_1.jpg"
         },
         {
             "anecdote": "It was designed by the French architect Louis-François Cassas.",
-            "image_path": ""
+            "image_path": "train_2.jpg"
         },
         {
             "anecdote": "During World War II, the former Mulhouse train station was severely damaged.",
-            "image_path": ""
+            "image_path": "train_3.jpg"
         },
         {
             "anecdote": "It was replaced by another train station in 1906.",
-            "image_path": ""
+            "image_path": "train_4.jpg"
         }
     ]
 }

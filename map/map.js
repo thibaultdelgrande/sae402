@@ -1,9 +1,3 @@
-/*if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
-{
-    alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
-}
-else{
-  */
 
 
 // Détecte quelle étape est en cours
@@ -25,31 +19,43 @@ function etape(){
     else if (etapes[id_status].type == "cinematic" || etapes[id_status].type == "launch_game"){
         cinematic();
     }
+    else if (etapes[id_status].type == "end"){
+        // Rediriger vers la page de fin
+        window.location.href = '/end'
+    }
 }
 
 function goto(){
-    var lastUpdateTime = 0;
-    var minUpdateInterval = 10000; // 10 secondes
-    var minDistanceInterval = 10; // 10 mètres
 
-    //Afficher la carte
-    document.getElementById("map").style.display = "block";
+    if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
+    {
+        alert("Pour pouvoir jouer, vous devez utiliser un appareil mobile.");
+    }
+    else{
 
-    navigator.geolocation.watchPosition(function (position) {
-        var currentTime = new Date().getTime();
-        if (!(currentTime - lastUpdateTime < minUpdateInterval)) {
-            var latLng = [position.coords.latitude, position.coords.longitude];
+        var lastUpdateTime = 0;
+        var minUpdateInterval = 10000; // 10 secondes
+        var minDistanceInterval = 10; // 10 mètres
 
-            // Vérifier l'utilisateur est assez proche de l'objectif
-            if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < minDistanceInterval) {
-                // Mettre à jour la position de l'utilisateur
-                lastPosition = latLng;
-                lastUpdateTime = currentTime;
+        //Afficher la carte
+        document.getElementById("map").style.display = "block";
+
+        navigator.geolocation.watchPosition(function (position) {
+            var currentTime = new Date().getTime();
+            if (!(currentTime - lastUpdateTime < minUpdateInterval)) {
+                var latLng = [position.coords.latitude, position.coords.longitude];
+
+                // Vérifier l'utilisateur est assez proche de l'objectif
+                if (L.latLng(latLng).distanceTo(L.latLng(etapes[id_status].destination)) < minDistanceInterval) {
+                    // Mettre à jour la position de l'utilisateur
+                    lastPosition = latLng;
+                    lastUpdateTime = currentTime;
+                }
             }
-        }
-        // Mettre à jour la carte et le marqueur de position
-        updateMap(latLng);
-    });
+            // Mettre à jour la carte et le marqueur de position
+            updateMap(latLng);
+        });
+    }
 }
 
 function cinematic(){
@@ -182,7 +188,7 @@ fetch('etapes.json')
   .then(data => {
     etapes = data.etapes;
     // Si aucune valeur pour id_status n'est trouvée dans les cookies, on initialise à 0
-    if (document.cookie.indexOf("id_status") == -1) {
+    if (document.cookie.indexOf("id_status") == undefined) {
         id_status = 0;
         document.cookie = "id_status="+id_status+" ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT";
     }

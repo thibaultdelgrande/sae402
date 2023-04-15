@@ -38,7 +38,7 @@
         },
         {
             "type" : "launch_game",
-            "url" : "/statue",
+            "url" : "/waterbis",
             "message" : "Can you help me?",
             "image" : "sprites/antoine.png",
             "background" : "background/dmc.jpg"
@@ -78,8 +78,54 @@
             "message": "It looks like he's trying to show me something by the path he's taking.",
             "image": "sprites/antoine.png",
             "background": "background/cite_ouvriere.jpg",
-            "url": "/statue"
+            "url": "/tracker-code"
+        },
+        {
+            "type" : "cinematic",
+            "message" : "I think I know where he's going. He's going to the train station.",
+            "image" : "sprites/antoine.png",
+            "background" : "background/cite_ouvriere.jpg"
+        },
+        {
+            "type" : "goto",
+            "destination" : [47.7421171,7.3399166],
+            "name" : "Cité ouvrière",
+            "destination_name" : "Train station"
+        },
+        {
+            "type" : "launch_game",
+            "url" : "/train",
+            "message" : "Help ... me ... with ... the ... trains ...",
+            "image" : "sprites/ghost.png",
+            "background" : "background/train.jpg"
+        },
+        {
+            "type" : "cinematic",
+            "message" : "Thank you for helping me. I think we should rest a little bit.",
+            "image" : "sprites/ghost.png",
+            "background" : "background/train.jpg"
+        },
+        {
+            "type" : "goto",
+            "destination" : [47.7426678,7.34613],
+            "name" : "Train station",
+            "destination_name" : "Square du Tivoli"
+        },
+        {
+            "type" : "cinematic",
+            "message" : "Thank you again for helping me. I used to work at the train station, but I died. I don't know how, but I'm here now.",
+            "image" : "sprites/ghost.png",
+            "background" : "background/park.jpg"
+        },
+        {
+            "type" : "launch_game",
+            "url" : "/statue",
+            "message" : "Unlock the statue for me please.",
+            "image" : "sprites/ghost.png",
+            "background" : "background/park.jpg"
+        },
+        {
+            "type" : "end"
         }
-
     ]
 }

@@ -9,9 +9,38 @@
 <body>
     <h1>Choose your game</h1>
     <ul>
-        <li><a href="/statue">Statue mini-game</a></li>
+        <li><a href="/waterbis">Water mini-game</a></li>
+        <li><a href="/tracker-code">Tracker code mini-game</a></li>
         <li><a href="/train">Train mini-game</a></li>
+        <li><a href="/statue">Statue mini-game</a></li>
+    </ul>
+    <h2>Start after some key points</h2>
+    <ul>
+        <li><button id="DMC">Start after going to DMC</button></li>
+        <li><button id="worker">Start after going to the worker city</button></li>
+        <li><button id="train">Start after going to the train station</button></li>
+        <li><button id="park">Start after going to the park</button></li>
     </ul>
     <a href="/map">Access the map</a>
+    <script>
+        document.querySelector('#DMC').addEventListener('click', () => {
+            document.cookie = "id_status=1 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+            window.location.href = '/map';
+        });
+        document.querySelector('#worker').addEventListener('click', () => {
+            document.cookie = "id_status=11 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+            window.location.href = '/map';
+        });
+        document.querySelector('#train').addEventListener('click', () => {
+            document.cookie = "id_status=15 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+            window.location.href = '/map';
+        });
+        document.querySelector('#park').addEventListener('click', () => {
+            document.cookie = "id_status=4 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+            window.location.href = '/map';
+        });
+
+
+    </script>
 </body>
 </html>
