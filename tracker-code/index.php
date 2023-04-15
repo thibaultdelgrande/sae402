@@ -7,7 +7,7 @@
 </head>
 <body>
 <header>
-    <div class="difficulty-group"><p>Difficulty : </p><img src="..\public\img\star_fill.svg"><img src="..\public\img\star_fill.svg"><img src="..\public\img\star.svg"></div><div class="name">Working-class city</div></header>
+    <div class="difficulty-group"><p>Difficulty : </p><img src="\public\img\star_fill.svg"><img src="\public\img\star_fill.svg"><img src="\public\img\star.svg"></div><div class="name">Working-class city</div></header>
 <main>
     <p class="instruction">One of my dear friend send me a letter where he give me a little gift with this instructions.
         To open my gift, you need to draw numbers with this following paths :<br>
