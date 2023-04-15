@@ -4,7 +4,12 @@ const ctx = canvas.getContext('2d');
 
 let id_railsTrace = 0;
 let score = 0;
-// Créer la classe Train
+let timer = 120;
+
+
+
+
+
 
 let interface = {
     x: 0,
@@ -41,6 +46,18 @@ let interactionStatus = {
 
 let railsTraces = [];
 let trains = [];
+
+
+async function timerCountdown() {
+    while (timer > 0) {
+        timer--;
+        await sleep(1000);
+    }
+    document.querySelector("#win").style.display = "flex";
+    document.querySelector("#win p").innerText = "Score : " + score;
+    document.cookie = "id_status=16 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+}
+
 
 // Redimensionner le canvas en fonction de la taille de l'écran
 function resizeCanvas() {
@@ -502,7 +519,7 @@ function draw() {
     }    
 
     // Créé des trains qui apparaissent àléatoirement à gauche et à droite sur les rails
-    if (Math.random() < 0.01) {
+    if (Math.random() < 0.001) {
         let position;
         let cote_arrivee;
         let id;
@@ -720,6 +737,7 @@ function draw() {
     // Appeler la fonction draw à chaque frame
     requestAnimationFrame(draw);
 }
+
 
 
 
