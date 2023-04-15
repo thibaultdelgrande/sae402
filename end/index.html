@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The End</title>
+</head>
+<body>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+        p {
+            font-size: 1.5rem;
+        }
+        button {
+            font-size: 1.5rem;
+            padding: 1rem;
+            margin: 1rem;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+    </style>
+    <h1>Thank you for playing</h1>
+    <p>Thank you for playing this game. I hope you enjoyed it.</p>
+    <button>Play again</button>
+    <script>
+        const button = document.querySelector('button');
+        button.addEventListener('click', () => {
+            document.cookie = "id_status=0 ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT"
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
