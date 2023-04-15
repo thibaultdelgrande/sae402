@@ -24,3 +24,38 @@ header>div{
     border: solid #ffec66;
     border-width: 0 20px 20px 20px;
 }
+#carte{
+    width: 100vw;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.drawing-area {
+    box-shadow: 0 0 6px 0 #999;
+}
+
+.clear-button {
+    margin: 2em;
+    font-size: 20px;
+}
+
+canvas{
+    background-image: url("/public/img/carte_bis.jpg");
+}
+form{
+    display: flex;
+    justify-content: center;
+    gap: 2vw;
+    font-size: 26px;
+    margin-bottom: 2vh;
+}
+.answer{
+    display: flex;
+    justify-content: center;
+    font-size: 24px;
+}
