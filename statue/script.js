@@ -26,14 +26,19 @@ let tableau = {
     ]
 }
 
+// Récupération de la valeur du cookie id_status
+let id_status = parseInt(document.cookie.split("id_status=")[1].split(";")[0]);
+
+console.log(id_status);
+
 function AffichageTableau() {
     // Si le tableau est dans l'odre, on affiche un message de victoire
     if (tableau.case.every((element, index) => element.id === index)) {
         document.querySelector("#win").style.display = "flex";
-        id_status = parseInt(document.cookie.split("id_status=")[1].split(";")[0]);
-        id_status ++;
-        document.cookie = "id_status="+id_status+" ; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-        return;
+        // Ajout de 1 à la valeur id_status dans le cookie
+        id_status = id_status + 1;
+        document.cookie = "id_status=" + id_status + " ; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+        
     }
 
     // Affichage du tableau
@@ -91,7 +96,7 @@ function rotate(position_case){
 // Mélange le tableau
 
 function melange() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 2; i++) {
         let position_case = Math.floor(Math.random() * (tableau.width * tableau.height - 1));
         rotate(position_case);
     }
