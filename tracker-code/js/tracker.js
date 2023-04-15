@@ -1,41 +1,107 @@
 function initMap() {
     // Adapter la taille de l'écran pour qu'elle prenne la partie inférieure de l'écran
-    var map = document.getElementById("map");
-    map.style.height =(window.innerHeight * 0.6) + "px";
+    var carte = document.getElementById("carte");
+    carte.style.height = (window.innerHeight * 0.6) + "px";
+}
+// =============
+// == Globals ==
+// =============
+const canvas = document.getElementById('drawing-area');
+const canvasContext = canvas.getContext('2d');
+const clearButton = document.getElementById('clear-button');
+const state = {
+    mousedown: false
+};
 
-    // Créer une carte centrée sur l'utilisateur
-    navigator.geolocation.getCurrentPosition(function (position) {
-        var latLng = L.latLng(position.coords.latitude, position.coords.longitude);
-        var map = L.map('map').setView(latLng, 17);
+// ===================
+// == Configuration ==
+// ===================
+const lineWidth = 20;
+const halfLineWidth = lineWidth / 2;
+const fillStyle = '#333';
+const strokeStyle = '#333';
+const shadowColor = '#333';
+const shadowBlur = lineWidth / 4;
 
-        // Ajouter un marqueur à l'emplacement de l'utilisateur
-        var marker = L.marker(latLng).addTo(map)
-            .bindPopup("Vous êtes ici").openPopup();
+// =====================
+// == Event Listeners ==
+// =====================
+canvas.addEventListener('mousedown', handleWritingStart);
+canvas.addEventListener('mousemove', handleWritingInProgress);
+canvas.addEventListener('mouseup', handleDrawingEnd);
+canvas.addEventListener('mouseout', handleDrawingEnd);
 
-        // Ajouter une couche de tuiles OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-            maxZoom: 19
-        }).addTo(map);
-    }, function (error) {
-        var message;
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                message = "Vous avez refusé la géolocalisation.";
-                break;
-            case error.POSITION_UNAVAILABLE:
-                message = "La géolocalisation n'est pas disponible sur votre appareil.";
-                break;
-            case error.TIMEOUT:
-                message = "La géolocalisation a expiré.";
-                break;
-            case error.UNKNOWN_ERROR:
-                message = "Une erreur inconnue s'est produite.";
-                break;
-            default:
-                message = "Une erreur inconnue s'est produite.";
-                break;
-        }
-        alert("Impossible de récupérer votre position : " + message);
-    }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
+canvas.addEventListener('touchstart', handleWritingStart);
+canvas.addEventListener('touchmove', handleWritingInProgress);
+canvas.addEventListener('touchend', handleDrawingEnd);
+
+clearButton.addEventListener('click', handleClearButtonClick);
+
+// ====================
+// == Event Handlers ==
+// ====================
+function handleWritingStart(event) {
+    event.preventDefault();
+
+    const mousePos = getMosuePositionOnCanvas(event);
+
+    canvasContext.beginPath();
+
+    canvasContext.moveTo(mousePos.x, mousePos.y);
+
+    canvasContext.lineWidth = lineWidth;
+    canvasContext.strokeStyle = strokeStyle;
+    canvasContext.shadowColor = null;
+    canvasContext.shadowBlur = null;
+
+    canvasContext.fill();
+
+    state.mousedown = true;
+}
+
+function handleWritingInProgress(event) {
+    event.preventDefault();
+
+    if (state.mousedown) {
+        const mousePos = getMosuePositionOnCanvas(event);
+
+        canvasContext.lineTo(mousePos.x, mousePos.y);
+        canvasContext.stroke();
+    }
+}
+
+function handleDrawingEnd(event) {
+    event.preventDefault();
+
+    if (state.mousedown) {
+        canvasContext.shadowColor = shadowColor;
+        canvasContext.shadowBlur = shadowBlur;
+
+        canvasContext.stroke();
+    }
+
+    state.mousedown = false;
+}
+
+function handleClearButtonClick(event) {
+    event.preventDefault();
+
+    clearCanvas();
+}
+
+// ======================
+// == Helper Functions ==
+// ======================
+function getMosuePositionOnCanvas(event) {
+    const clientX = event.clientX || event.touches[0].clientX;
+    const clientY = event.clientY || event.touches[0].clientY;
+    const { offsetLeft, offsetTop } = event.target;
+    const canvasX = clientX - offsetLeft;
+    const canvasY = clientY - offsetTop;
+
+    return { x: canvasX, y: canvasY };
+}
+
+function clearCanvas() {
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 }
